@@ -2,6 +2,13 @@ import torch
 import random
 
 def huber(x, k=1.0):
+    '''
+    误差小（|diff| < 1）：用 0.5 * diff²（像 L2，平滑）
+    误差大（|diff| ≥ 1）：用 |diff| - 0.5（像 L1，不会因为大误差爆炸）
+
+    普通 L2:  误差越大，惩罚平方级增长（不稳定）
+    Huber:    小误差 L2，大误差 L1（更稳健）
+    '''
     return torch.where(x.abs() < k, 0.5 * x.pow(2), k * (x.abs() - 0.5 * k))
 
 class ReplayMemory:
